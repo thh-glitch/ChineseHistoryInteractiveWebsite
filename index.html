@@ -3,51 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>互動學習資源庫 | 本地數據版</title>
+    <title>LSTKCC 中史科互動學習天地</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        /* 保持原本精美的毛玻璃視覺效果 */
-        :root { --glass-bg: rgba(255, 255, 255, 0.06); --glass-border: rgba(255, 255, 255, 0.12); }
-        body { font-family: 'Poppins', 'Noto Sans TC', sans-serif; background: #050811; margin: 0; color: #fff; overflow-x: hidden; }
-        .gradient-bg { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(125deg, #050811 0%, #0a132e 50%, #160a2e 100%); z-index: -2; }
-        .animated-blob { position: fixed; width: 600px; height: 600px; background: radial-gradient(circle, rgba(79, 70, 229, 0.15) 0%, rgba(0,0,0,0) 70%); border-radius: 50%; z-index: -1; filter: blur(100px); animation: moveAround 25s infinite alternate ease-in-out; }
-        @keyframes moveAround { 0% { transform: translate(-10%, -10%) scale(1); } 50% { transform: translate(30%, 20%) scale(1.2); } 100% { transform: translate(-5%, 40%) scale(0.9); } }
-        .glass-card { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .glass-card:hover { transform: translateY(-15px) scale(1.02); background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.3); }
-        .reveal { opacity: 0; transform: translateY(40px); }
-        .reveal.active { animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
-        .text-gradient { background: linear-gradient(to right, #818cf8, #c084fc, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        :root {
+            --paper-bg: #fdfbf7;
+            --ink-black: #1a1a1a;
+            --heritage-red: #8c1b1b;
+            --heritage-blue: #1a3a5a;
+        }
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--paper-bg);
+            color: var(--ink-black);
+            background-image: url('https://www.transparenttextures.com/patterns/paper.png'); /* 輕微紙張紋理 */
+        }
+        h1, h2, .serif { font-family: 'Noto Serif TC', serif; }
+
+        /* 分類按鈕樣式 */
+        .filter-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #e2e2e2;
+        }
+        .filter-btn.active {
+            background-color: var(--heritage-red);
+            color: white;
+            border-color: var(--heritage-red);
+            box-shadow: 0 4px 12px rgba(140, 27, 27, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* 縮小後的學習卡片 */
+        .learning-card {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            background: white;
+            border: 1px solid #eee;
+        }
+        .learning-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            border-color: var(--heritage-red);
+        }
+
+        /* 年級標籤顏色映射 */
+        .tag-s1 { background-color: #4a7c59; } /* 森林綠 */
+        .tag-s2 { background-color: #3d5a80; } /* 黛藍 */
+        .tag-s3 { background-color: #7d5a50; } /* 赭石 */
+        .tag-s4 { background-color: #b07d62; } /* 琥珀 */
+        .tag-s5 { background-color: #582f0e; } /* 焦茶 */
+        .tag-s6 { background-color: var(--heritage-red); } /* 硃砂 */
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        /* 載入動畫 */
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .animate-card { animation: fadeInScale 0.4s ease forwards; }
     </style>
 </head>
-<body>
+<body class="min-h-screen">
 
-    <div class="gradient-bg"></div>
-    <div class="animated-blob" style="top: -10%; left: -10%;"></div>
-
-    <div class="max-w-7xl mx-auto px-6 py-16">
-        <header class="text-center mb-20 reveal active">
-            <h1 class="text-6xl md:text-8xl font-black mb-8 tracking-tight">
-                探索<span class="text-gradient">智慧學習</span>
-            </h1>
-            <p class="text-slate-400 text-lg max-w-2xl mx-auto">
-                讀取本地數據庫：已準備就緒。
-            </p>
-        </header>
-
-        <div class="max-w-2xl mx-auto mb-24 reveal active">
-            <input type="text" id="searchInput" placeholder="搜尋課題..." 
-                class="w-full bg-white/5 border border-white/10 rounded-3xl py-6 px-16 text-lg focus:outline-none placeholder:text-slate-600 shadow-2xl backdrop-blur-md">
+    <header class="pt-16 pb-12 px-6 text-center">
+        <div class="mb-4">
+            <span class="serif text-xl md:text-2xl tracking-[0.3em] text-gray-500">樂善堂梁銶琚書院</span>
         </div>
+        <h1 class="serif text-4xl md:text-6xl font-black text-slate-800 mb-4">
+            中國歷史科<span class="text-[var(--heritage-red)]">互動學習天地</span>
+        </h1>
+        <div class="w-24 h-1 bg-[var(--heritage-red)] mx-auto mb-8"></div>
+    </header>
 
-        <div id="cardContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+    <div class="max-w-6xl mx-auto px-6 mb-12">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div id="filterGroup" class="flex flex-wrap justify-center gap-2">
+                <button class="filter-btn active px-6 py-2 rounded-full text-sm font-medium" data-grade="all">全部</button>
+                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中一">中一</button>
+                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中二">中二</button>
+                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中三">中三</button>
+                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中四">中四</button>
+                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中五">中五</button>
+                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中六">中六</button>
             </div>
+            
+            <div class="relative w-full md:w-64">
+                <input type="text" id="searchInput" placeholder="搜尋課題名稱..." 
+                    class="w-full bg-white border border-gray-200 rounded-xl py-3 px-10 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--heritage-red)] transition-all">
+                <svg class="absolute left-3 top-3.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+        </div>
     </div>
 
+    <main class="max-w-7xl mx-auto px-6 pb-24">
+        <div id="cardContainer" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div class="col-span-full text-center py-20 text-gray-400">正在打開歷史卷軸...</div>
+        </div>
+    </main>
+
     <script>
-        // ✅ 關鍵修改：讀取同一個資料夾下的 data.csv
         const CSV_URL = './data.csv'; 
+        let allData = [];
+        let currentFilter = 'all';
+
+        // 取得年級對應顏色 class
+        function getTagClass(grade) {
+            if (grade.includes('中一')) return 'tag-s1';
+            if (grade.includes('中二')) return 'tag-s2';
+            if (grade.includes('中三')) return 'tag-s3';
+            if (grade.includes('中四')) return 'tag-s4';
+            if (grade.includes('中五')) return 'tag-s5';
+            if (grade.includes('中六')) return 'tag-s6';
+            return 'bg-gray-500';
+        }
 
         function parseCSV(data) {
             const rows = []; let currRow = []; let currVal = ''; let inQuotes = false;
@@ -67,59 +141,84 @@
             return rows;
         }
 
-        async function init() {
+        function renderCards(filterGrade = 'all', searchTerm = '') {
             const container = document.getElementById('cardContainer');
-            try {
-                // 讀取本地檔案
-                const response = await fetch(CSV_URL);
-                if (!response.ok) throw new Error('找不到 data.csv 檔案，請確認檔案已放在正確位置。');
+            container.innerHTML = '';
+
+            const filtered = allData.filter(row => {
+                const matchGrade = filterGrade === 'all' || row[0] === filterGrade;
+                const matchSearch = row[1].toLowerCase().includes(searchTerm.toLowerCase());
+                return matchGrade && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-20 text-center">
+                        <div class="text-5xl mb-4">📜</div>
+                        <p class="text-gray-400 serif text-xl">${filterGrade === 'all' ? '目前尚無資料' : filterGrade + ' 的歷史卷軸正在努力編纂中，敬請期待！'}</p>
+                    </div>`;
+                return;
+            }
+
+            filtered.forEach((row, index) => {
+                const [category, title, url, desc, img] = row;
+                const safeImg = img || 'https://images.unsplash.com/photo-1578271825288-4a6e45de49df?w=400&q=80';
                 
+                const card = document.createElement('div');
+                card.className = 'learning-card group rounded-2xl overflow-hidden flex flex-col animate-card';
+                card.style.animationDelay = `${index * 50}ms`;
+
+                card.innerHTML = `
+                    <div class="relative h-32 overflow-hidden">
+                        <img src="${safeImg}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/20"></div>
+                        <div class="absolute top-3 left-3">
+                            <span class="${getTagClass(category)} text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-sm">
+                                ${category}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-4 flex-grow flex flex-col">
+                        <h3 class="serif text-lg font-bold mb-2 text-slate-800 line-clamp-1 group-hover:text-[var(--heritage-red)] transition-colors">${title}</h3>
+                        <p class="text-gray-500 text-xs leading-relaxed mb-4 line-clamp-2">${desc || '點擊下方按鈕開始探索此課題內容。'}</p>
+                        <div class="mt-auto">
+                            <a href="${url}" target="_blank" 
+                               class="block w-full text-center py-2.5 rounded-xl bg-slate-50 text-slate-700 text-xs font-bold border border-slate-200 hover:bg-[var(--heritage-red)] hover:text-white hover:border-[var(--heritage-red)] transition-all">
+                               開始互動學習
+                            </a>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // 初始化
+        async function init() {
+            try {
+                const response = await fetch(CSV_URL);
+                if (!response.ok) throw new Error('找不到 data.csv');
                 const text = await response.text();
-                const data = parseCSV(text);
-                container.innerHTML = '';
-
-                for (let i = 1; i < data.length; i++) {
-                    const row = data[i];
-                    if (!row || row.length < 3 || !row[1]) continue;
-
-                    const category = row[0] || '一般';
-                    const title = row[1];
-                    const url = row[2];
-                    const desc = row[3] || '探索這個精彩的互動學習單元。';
-                    const img = row[4] || 'https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?w=800';
-
-                    const card = document.createElement('div');
-                    card.className = 'glass-card rounded-[2.5rem] overflow-hidden flex flex-col reveal';
-                    card.innerHTML = `
-                        <div class="relative h-64 overflow-hidden">
-                            <img src="${img}" class="w-full h-full object-cover">
-                            <div class="absolute top-6 left-6">
-                                <span class="px-4 py-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-[10px] font-black uppercase">
-                                    ${category}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="p-10 flex-grow flex flex-col">
-                            <h3 class="text-3xl font-bold mb-4 text-white">${title}</h3>
-                            <p class="text-slate-400 text-sm mb-10 line-clamp-3">${desc}</p>
-                            <a href="${url}" target="_blank" class="block w-full bg-white text-black text-center font-extrabold py-5 rounded-2xl">立即開始</a>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                    setTimeout(() => card.classList.add('active'), i * 100);
-                }
+                const rawData = parseCSV(text);
+                allData = rawData.slice(1); // 移除標題列
+                renderCards();
             } catch (err) {
-                container.innerHTML = `<div class="col-span-full text-center p-10 bg-red-900/20 rounded-3xl text-red-400">
-                    <b>載入失敗：</b> ${err.message}<br><br>
-                    <small>注意：如果您是直接雙擊打開 .html，瀏覽器可能會阻擋讀取本地檔案。請將 index.html 和 data.csv 一起上傳到 GitHub 即可正常顯示！</small>
-                </div>`;
+                document.getElementById('cardContainer').innerHTML = `<p class="col-span-full text-center text-red-500">${err.message}</p>`;
             }
         }
 
+        // 搜尋監聽
         document.getElementById('searchInput').addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            document.querySelectorAll('.glass-card').forEach(card => {
-                card.style.display = card.innerText.toLowerCase().includes(term) ? 'flex' : 'none';
+            renderCards(currentFilter, e.target.value);
+        });
+
+        // 過濾按鈕監聽
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.getAttribute('data-grade');
+                renderCards(currentFilter, document.getElementById('searchInput').value);
             });
         });
 
