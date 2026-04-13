@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互動學習資源庫 | 本地數據版</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* 保持原本精美的毛玻璃視覺效果 */
+        :root { --glass-bg: rgba(255, 255, 255, 0.06); --glass-border: rgba(255, 255, 255, 0.12); }
+        body { font-family: 'Poppins', 'Noto Sans TC', sans-serif; background: #050811; margin: 0; color: #fff; overflow-x: hidden; }
+        .gradient-bg { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(125deg, #050811 0%, #0a132e 50%, #160a2e 100%); z-index: -2; }
+        .animated-blob { position: fixed; width: 600px; height: 600px; background: radial-gradient(circle, rgba(79, 70, 229, 0.15) 0%, rgba(0,0,0,0) 70%); border-radius: 50%; z-index: -1; filter: blur(100px); animation: moveAround 25s infinite alternate ease-in-out; }
+        @keyframes moveAround { 0% { transform: translate(-10%, -10%) scale(1); } 50% { transform: translate(30%, 20%) scale(1.2); } 100% { transform: translate(-5%, 40%) scale(0.9); } }
+        .glass-card { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        .glass-card:hover { transform: translateY(-15px) scale(1.02); background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.3); }
+        .reveal { opacity: 0; transform: translateY(40px); }
+        .reveal.active { animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        .text-gradient { background: linear-gradient(to right, #818cf8, #c084fc, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    </style>
+</head>
+<body>
+
+    <div class="gradient-bg"></div>
+    <div class="animated-blob" style="top: -10%; left: -10%;"></div>
+
+    <div class="max-w-7xl mx-auto px-6 py-16">
+        <header class="text-center mb-20 reveal active">
+            <h1 class="text-6xl md:text-8xl font-black mb-8 tracking-tight">
+                探索<span class="text-gradient">智慧學習</span>
+            </h1>
+            <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+                讀取本地數據庫：已準備就緒。
+            </p>
+        </header>
+
+        <div class="max-w-2xl mx-auto mb-24 reveal active">
+            <input type="text" id="searchInput" placeholder="搜尋課題..." 
+                class="w-full bg-white/5 border border-white/10 rounded-3xl py-6 px-16 text-lg focus:outline-none placeholder:text-slate-600 shadow-2xl backdrop-blur-md">
+        </div>
+
+        <div id="cardContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+            </div>
+    </div>
+
+    <script>
+        // ✅ 關鍵修改：讀取同一個資料夾下的 data.csv
+        const CSV_URL = './data.csv'; 
+
+        function parseCSV(data) {
+            const rows = []; let currRow = []; let currVal = ''; let inQuotes = false;
+            for (let i = 0; i < data.length; i++) {
+                const char = data[i]; const nextChar = data[i+1];
+                if (char === '"' && inQuotes && nextChar === '"') { currVal += '"'; i++; } 
+                else if (char === '"') { inQuotes = !inQuotes; } 
+                else if (char === ',' && !inQuotes) { currRow.push(currVal.trim()); currVal = ''; } 
+                else if ((char === '\n' || char === '\r') && !inQuotes) {
+                    if (currVal !== '' || currRow.length > 0) {
+                        currRow.push(currVal.trim()); rows.push(currRow); currRow = []; currVal = '';
+                    }
+                    if (char === '\r' && nextChar === '\n') i++; 
+                } else { currVal += char; }
+            }
+            if (currRow.length > 0 || currVal !== '') { currRow.push(currVal.trim()); rows.push(currRow); }
+            return rows;
+        }
+
+        async function init() {
+            const container = document.getElementById('cardContainer');
+            try {
+                // 讀取本地檔案
+                const response = await fetch(CSV_URL);
+                if (!response.ok) throw new Error('找不到 data.csv 檔案，請確認檔案已放在正確位置。');
+                
+                const text = await response.text();
+                const data = parseCSV(text);
+                container.innerHTML = '';
+
+                for (let i = 1; i < data.length; i++) {
+                    const row = data[i];
+                    if (!row || row.length < 3 || !row[1]) continue;
+
+                    const category = row[0] || '一般';
+                    const title = row[1];
+                    const url = row[2];
+                    const desc = row[3] || '探索這個精彩的互動學習單元。';
+                    const img = row[4] || 'https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?w=800';
+
+                    const card = document.createElement('div');
+                    card.className = 'glass-card rounded-[2.5rem] overflow-hidden flex flex-col reveal';
+                    card.innerHTML = `
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="${img}" class="w-full h-full object-cover">
+                            <div class="absolute top-6 left-6">
+                                <span class="px-4 py-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-[10px] font-black uppercase">
+                                    ${category}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-10 flex-grow flex flex-col">
+                            <h3 class="text-3xl font-bold mb-4 text-white">${title}</h3>
+                            <p class="text-slate-400 text-sm mb-10 line-clamp-3">${desc}</p>
+                            <a href="${url}" target="_blank" class="block w-full bg-white text-black text-center font-extrabold py-5 rounded-2xl">立即開始</a>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                    setTimeout(() => card.classList.add('active'), i * 100);
+                }
+            } catch (err) {
+                container.innerHTML = `<div class="col-span-full text-center p-10 bg-red-900/20 rounded-3xl text-red-400">
+                    <b>載入失敗：</b> ${err.message}<br><br>
+                    <small>注意：如果您是直接雙擊打開 .html，瀏覽器可能會阻擋讀取本地檔案。請將 index.html 和 data.csv 一起上傳到 GitHub 即可正常顯示！</small>
+                </div>`;
+            }
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.glass-card').forEach(card => {
+                card.style.display = card.innerText.toLowerCase().includes(term) ? 'flex' : 'none';
+            });
+        });
+
+        init();
+    </script>
+</body>
+</html>
