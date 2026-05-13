@@ -34,12 +34,15 @@
             transform: translateY(-2px);
         }
 
-        /* 無圖片版的學習卡片 */
+        /* 學習卡片基礎樣式 */
         .learning-card {
             transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             background: white;
             border: 1px solid #eee;
             height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* 確保圖片圓角不會超出 */
         }
         .learning-card:hover {
             transform: translateY(-8px);
@@ -54,7 +57,8 @@
         .tag-s4 { background-color: #b07d62; } 
         .tag-s5 { background-color: #582f0e; } 
         .tag-s6 { background-color: var(--heritage-red); } 
-        .tag-game { background-color: #e07a5f; } /* 新增：遊戲標籤顏色 (赤土橙色) */
+        .tag-game { background-color: #e07a5f; } 
+        .tag-gems { background-color: #8b5cf6; } 
 
         /* 優雅的自訂捲軸 (給長文字使用) */
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
@@ -93,6 +97,7 @@
                 <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中五">中五</button>
                 <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中六">中六</button>
                 <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="遊戲">遊戲</button>
+                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="學習用 Google Gems">學習用 Google Gems</button>
             </div>
             
             <div class="relative w-full md:w-64">
@@ -122,7 +127,8 @@
             if (grade.includes('中四')) return 'tag-s4';
             if (grade.includes('中五')) return 'tag-s5';
             if (grade.includes('中六')) return 'tag-s6';
-            if (grade.includes('遊戲')) return 'tag-game'; // 新增：判斷遊戲標籤
+            if (grade.includes('遊戲')) return 'tag-game';
+            if (grade.includes('Gems') || grade.includes('Google')) return 'tag-gems';
             return 'bg-gray-500';
         }
 
@@ -164,28 +170,40 @@
             }
 
             filtered.forEach((row, index) => {
-                const [category, title, url, desc] = row;
+                // 解構 CSV 欄位：新增第 5 個欄位 imageUrl (欄位索引 4)
+                const [category, title, url, desc, imageUrl] = row;
                 
                 const card = document.createElement('div');
-                card.className = 'learning-card group rounded-2xl flex flex-col animate-card';
+                card.className = 'learning-card group rounded-2xl animate-card';
                 card.style.animationDelay = `${index * 50}ms`;
 
+                // 判斷是否有圖片網址，若有則生成圖片 HTML 區塊
+                const imageSection = (imageUrl && imageUrl.trim() !== '') 
+                    ? `<div class="w-full h-44 overflow-hidden bg-slate-100 relative">
+                        <img src="${imageUrl.trim()}" alt="${title}" 
+                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                             onerror="this.parentElement.style.display='none';">
+                       </div>`
+                    : '';
+
                 card.innerHTML = `
-                    <div class="p-6 flex-grow flex flex-col h-full">
-                        <div class="mb-3">
-                            <span class="${getTagClass(category)} text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm inline-block">
-                                ${category}
-                            </span>
+                    ${imageSection}
+                    <div class="p-6 flex-grow flex flex-col justify-between">
+                        <div>
+                            <div class="mb-3">
+                                <span class="${getTagClass(category)} text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm inline-block">
+                                    ${category}
+                                </span>
+                            </div>
+                            <h3 class="serif text-xl font-bold mb-3 text-slate-800 group-hover:text-[var(--heritage-red)] transition-colors">
+                                ${title}
+                            </h3>
+                            <div class="text-gray-600 text-sm leading-relaxed mb-6 overflow-y-auto max-h-28 pr-2 custom-scrollbar">
+                                ${desc || '點擊下方按鈕開始探索此課題內容。'}
+                            </div>
                         </div>
-                        <h3 class="serif text-xl font-bold mb-3 text-slate-800 group-hover:text-[var(--heritage-red)] transition-colors">
-                            ${title}
-                        </h3>
                         
-                        <div class="text-gray-600 text-sm leading-relaxed mb-6 flex-grow overflow-y-auto max-h-32 pr-2 custom-scrollbar">
-                            ${desc || '點擊下方按鈕開始探索此課題內容。'}
-                        </div>
-                        
-                        <div class="mt-auto pt-4 border-t border-gray-100">
+                        <div class="pt-4 border-t border-gray-100">
                             <a href="${url}" target="_blank" 
                                class="block w-full text-center py-3 rounded-xl bg-slate-50 text-slate-700 text-sm font-bold border border-slate-200 hover:bg-[var(--heritage-red)] hover:text-white hover:border-[var(--heritage-red)] transition-all">
                                 開始互動學習
