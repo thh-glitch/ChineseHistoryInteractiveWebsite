@@ -86,26 +86,26 @@
         <div class="w-24 h-1 bg-[var(--heritage-red)] mx-auto mb-8"></div>
     </header>
 
-    <div class="max-w-6xl mx-auto px-6 mb-12">
-        <div class="flex flex-col xl:flex-row items-center justify-center gap-6">
-            <div id="filterGroup" class="flex flex-wrap justify-center gap-2">
-                <button class="filter-btn active px-6 py-2 rounded-full text-sm font-medium" data-grade="all">全部</button>
-                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中一">中一</button>
-                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中二">中二</button>
-                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中三">中三</button>
-                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中四">中四</button>
-                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中五">中五</button>
-                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中六">中六</button>
-                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="學習用 Google Gems">學習用 Google Gems</button>
-                <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="遊戲">遊戲</button>
-            </div>
-            
-            <div class="relative w-full md:w-64">
-                <input type="text" id="searchInput" placeholder="搜尋課題名稱..." 
-                    class="w-full bg-white border border-gray-200 rounded-xl py-3 px-10 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--heritage-red)] transition-all">
-                <svg class="absolute left-3 top-3.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-            </div>
+    <div class="max-w-6xl mx-auto px-6 mb-12 flex flex-col items-center gap-6">
+        
+        <div id="filterGroup" class="flex flex-wrap justify-center gap-2 w-full">
+            <button class="filter-btn active px-6 py-2 rounded-full text-sm font-medium" data-grade="all">全部</button>
+            <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中一">中一</button>
+            <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中二">中二</button>
+            <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中三">中三</button>
+            <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中四">中四</button>
+            <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中五">中五</button>
+            <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="中六">中六</button>
+            <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="學習用 Google Gems">學習用 Google Gems</button>
+            <button class="filter-btn px-6 py-2 rounded-full text-sm font-medium" data-grade="遊戲">遊戲</button>
         </div>
+        
+        <div class="relative w-full max-w-xs mt-2">
+            <input type="text" id="searchInput" placeholder="搜尋課題名稱..." 
+                class="w-full bg-white border border-gray-200 rounded-xl py-3 px-10 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--heritage-red)] transition-all shadow-sm">
+            <svg class="absolute left-3 top-3.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+
     </div>
 
     <main class="max-w-7xl mx-auto px-6 pb-24">
